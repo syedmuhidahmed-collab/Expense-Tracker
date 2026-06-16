@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Expense Tracker 💸</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="container">
+
+    <h1>💰 Expense Tracker</h1>
+    <h3>Manage your daily expenses efficiently</h3>
+
+    <div class="dashboard">
+        <div class="card">
+            <h3>Total Spent</h3>
+            <p id="totalSpent">Rs. 0</p>
+        </div>
+        <div class="card">
+            <h3>No. of Expenses</h3>
+            <p id="expenseCount">0</p>
+        </div>
+    </div>
+
+    <div class="expense-form">
+        <input type="text" id="description" placeholder="Expense Description" />
+        <input type="number" id="amount" placeholder="Amount (Rs.)" />
+        <select id="category">
+            <option>🍕 Food</option>
+            <option>🚕 Transport</option>
+            <option>📚 Books</option>
+            <option>🎬 Entertainment</option>
+            <option>🛒 Shopping</option>
+            <option> Other</option>
+        </select>
+        <button class="btn-primary" onclick="AddExpense()">+ Add expense</button>
+    </div>
+
+    <div class="actions">
+        <button class="btn-danger" onclick="ClearAll()">🗑️ Clear Everything</button>
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Description</th>
+                <th>Category</th>
+                <th>Amount</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody id="expenseTable"></tbody>
+    </table>
+
+</div>
+
+<script src="script.js"></script>
+
+</html>
+
+ <!--JavaScript is written here --> 
+<script>
+    let total = 0;
+    let count = 0;
+
+    function addExpense() {
+      const description = document.getElementById('description').value.trim();
+      const amount = parseFloat(document.getElementById('amount').value);
+      const category = document.getElementById('category').value;
+
+      // Validation
+      if (!description || isNaN(amount) || amount <= 0) {
+        alert('Please enter a valid description and amount!');
+        return;
+      }
+
+      // < Update totals >
+
+      total += amount;
+      count++;
+      document.getElementById('totalSpent').textContent = `Rs. ${total.toFixed(2)}`;
+      document.getElementById('expenseCount').textContent = count;
+
+      // < Add row to table >
+
+      const table = document.getElementById('expenseTable');
+      const row = document.createElement('tr');
+      row.innerHTML = `
+        <td>${description}</td>
+        <td>${category}</td>
+        <td>Rs. ${amount.toFixed(2)}</td>
+        <td><button class="delete-btn" onclick="deleteExpense(this, ${amount})">✕ Delete</button></td>
+      `;
+      table.appendChild(row);
+
+      // Clear inputs
+      document.getElementById('description').value = '';
+      document.getElementById('amount').value = '';
+    }
+
+    function deleteExpense(btn, amount) {
+      total -= amount;
+      count--;
+      document.getElementById('totalSpent').textContent = `Rs. ${total.toFixed(2)}`;
+      document.getElementById('expenseCount').textContent = count;
+      btn.closest('tr').remove();
+    }
+
+    function clearAll() {
+      if (confirm('Are you sure you want to clear all expenses?')) {
+        document.getElementById('expenseTable').innerHTML = '';
+        total = 0;
+        count = 0;
+        document.getElementById('totalSpent').textContent = 'Rs. 0';
+        document.getElementById('expenseCount').textContent = '0';
+      }
+    }
+</script>
+</body>
+</html>
